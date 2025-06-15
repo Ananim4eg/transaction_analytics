@@ -1,0 +1,16 @@
+[project]
+name = "transaction-analytics"
+version = "0.1.0"
+description = ""
+authors = [
+    {name = "Ananim4eg",email = "109145711+Ananim4eg@users.noreply.github.com"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+]
+
+
+[build-system]
+requires = ["poetry-core>=2.0.0,<3.0.0"]
+build-backend = "poetry.core.masonry.api"
