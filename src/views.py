@@ -16,9 +16,31 @@ file_handler.setFormatter(file_formater)
 logger.addHandler(file_handler)
 logger.setLevel(logging.DEBUG)
 
+path_to_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'operations.xlsx')
 
-def main_page(date: str) -> None:
-    ...
+
+def main_page(date: str) -> str:
+    """Формирует результирующий список"""
+    time_now = datetime.strptime(date, '%Y-%m-%d %H:%M:%S').time()
+
+    if 6 <= time_now.hour < 10:
+        greeting = "Доброе утро"
+    elif 10 <= time_now.hour < 17:
+        greeting = "Добрый день"
+    elif 17 <= time_now.hour < 22:
+        greeting = "Добрый вечер"
+    else:
+        greeting = "Доброй ночи"
+
+    result_list = {
+            "greeting": greeting,
+            "cards": get_card_expenses(read_xlsx_file(path_to_file)),
+            "top_transactions": get_top_transactions(read_xlsx_file(path_to_file)),
+            "currency_rates": get_currency_rates(),
+            "stock_prices": get_stock_prices()
+        }
+
+    return json.dumps(result_list, indent=4, ensure_ascii=False)
 
 
 def read_xlsx_file(path_file: str) -> pd.DataFrame | str:
@@ -137,7 +159,6 @@ def get_stock_prices() -> list[dict] | str:
         response = requests.get(url)
 
         if response.status_code == 200:
-            print(*response.json())
             list_stock_prices.append(
                 {
                     "stock": f"{stock}",
@@ -150,3 +171,11 @@ def get_stock_prices() -> list[dict] | str:
     logger.info("Конец формирования списка")
 
     return list_stock_prices
+
+
+if __name__ == "__main__":
+    # get_top_transactions(read_xlsx_file('C:\\Users\EasyGod\PycharmProjects\PythonProject\\transaction_analytics\data\operations.xlsx'))
+    # print(get_card_expenses(read_xlsx_file('C:\\Users\EasyGod\PycharmProjects\PythonProject\\transaction_analytics\data\operations.xlsx')))
+    # print(get_currency_rates())
+    # print(get_stock_prices())
+    print(main_page('2025-06-27 10:24:00'))
