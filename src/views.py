@@ -45,3 +45,23 @@ def get_top_transactions(list_transactions: pd.DataFrame) -> list[dict]:
         )
 
     return top_transactions
+
+
+def get_card_expenses(list_transactions: pd.DataFrame) -> list[dict]:
+    """Получение расходов по каждой карте"""
+
+    card_info =[]
+
+    df = list_transactions.groupby('Номер карты').agg({'Сумма операции': 'sum'})
+    line_card_expenses = df.iterrows()
+
+    for i in range(len(df)):
+        next_line = next(line_card_expenses)
+        card_info.append(
+            {
+                "last_digits": next_line[0][1:],
+                "total_spent": abs(float(df.loc[next_line[0]].iloc[0])),
+                "cashback": round(float(abs(df.loc[next_line[0]].iloc[0])) / 100, 2)
+            }
+        )
+    return card_info
