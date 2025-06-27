@@ -21,3 +21,27 @@ def read_xlsx_file(path_file: str) -> pd.DataFrame | str:
 
     except FileNotFoundError:
         return "Файл не найден"
+
+def get_top_transactions(list_transactions: pd.DataFrame) -> list[dict]:
+    """Получение топ-5 операций по их сумме"""
+    top_transactions = []
+
+    df = list_transactions.sort_values(by='Сумма операции').head()
+
+    for _ in range(5):
+        date_format = df.loc[:,'Дата операции'].iloc[_].split()[0]
+
+        if type(df.loc[:,'Категория'].iloc[_]) is float:
+            category_transaction = "Без категории"
+        else:
+            category_transaction = df.loc[:,'Категория'].iloc[_]
+        top_transactions.append(
+            {
+                "date": date_format,
+                "amount": abs(float(df.loc[:,'Сумма операции'].iloc[_])),
+                "category": category_transaction,
+                "description": df.loc[:,'Описание'].iloc[_]
+            }
+        )
+
+    return top_transactions
