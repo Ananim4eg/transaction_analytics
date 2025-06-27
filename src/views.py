@@ -93,3 +93,35 @@ def get_currency_rates() -> list[dict] | str:
             return "Произошла ошибка при получении курса валюты"
 
     return list_currency_rates
+
+
+def get_stock_prices() -> list[dict] | str:
+    """Получает цены акций, указанных в файле user_settings.json"""
+    list_stock_prices =[]
+    path_to_file_with_settings = os.path.join(os.path.dirname(__file__), '..', 'user_settings.json')
+
+    with open(path_to_file_with_settings, encoding='utf-8') as settings:
+        stocks = json.load(settings)["user_stocks"]
+
+    load_dotenv()
+    date_today = datetime.today().strftime('%Y-%m-%d')
+
+    for stock in stocks:
+        url = (f'https://financialmodelingprep.com/stable/historical-price-eod/light?symbol={stock}'
+               f'&from={date_today}'
+               f'&apikey={os.getenv("API_KEY_FOR_FMP")}')
+
+        response = requests.get(url)
+
+        if response.status_code == 200:
+            print(*response.json())
+            list_stock_prices.append(
+                {
+                    "stock": f"{stock}",
+                    "price": response.json()[0]["price"]
+                }
+            )
+        else:
+            return "Ошибка подключения"
+
+    return list_stock_prices
