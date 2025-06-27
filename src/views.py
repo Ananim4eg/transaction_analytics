@@ -65,3 +65,31 @@ def get_card_expenses(list_transactions: pd.DataFrame) -> list[dict]:
             }
         )
     return card_info
+
+
+def get_currency_rates() -> list[dict] | str:
+    """Получает курсы валют, указанных в файле user_settings.json"""
+    list_currency_rates = []
+    path_to_file_with_settings = os.path.join(os.path.dirname(__file__), '..', 'user_settings.json')
+
+    with open(path_to_file_with_settings, encoding='utf-8') as settings:
+        currency = json.load(settings)["user_currencies"]
+
+    load_dotenv()
+
+    for cur in currency:
+        url = f"https://api.apilayer.com/exchangerates_data/convert?to=RUB&from={cur}&amount=1"
+        headers = {'apikey':os.getenv("API_KEY_FOR_APILAYER")}
+        response = requests.get(url, headers=headers)
+
+        if response.status_code == 200:
+            list_currency_rates.append(
+                {
+                    "currency": cur,
+                    "rate": round(response.json()["result"], 2)
+                }
+            )
+        else:
+            return "Произошла ошибка при получении курса валюты"
+
+    return list_currency_rates
