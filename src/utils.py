@@ -31,6 +31,21 @@ def read_xlsx_file(path_file: str) -> pd.DataFrame | str:
         return "Файл не найден"
 
 
+def read_json_file(path_file: str) -> dict | str:
+    """Считывает json-файл и возвращает словарь"""
+
+    try:
+        logger.info("Чтение json-файла с настройками")
+        with open(path_file, encoding='utf-8') as settings:
+            result = json.load(settings)
+
+    except FileNotFoundError:
+        logger.error("Ошибка чтения файла")
+        return "Ошибка чтения файла."
+
+    return result
+
+
 def get_top_transactions(list_transactions: pd.DataFrame) -> list[dict]:
     """Получение топ-5 операций по их сумме"""
     top_transactions = []
@@ -91,19 +106,12 @@ def get_card_expenses(list_transactions: pd.DataFrame) -> list[dict]:
     return card_info
 
 
-def get_currency_rates() -> list[dict] | str:
+def get_currency_rates(settings: dict) -> list[dict] | str:
     """Получает курсы валют, указанных в файле user_settings.json"""
     list_currency_rates = []
-    path_to_file_with_settings = os.path.join(os.path.dirname(__file__), '..', 'user_settings.json')
 
-    try:
-        logger.info("Чтение файла настроек, с необходимыми валютами")
-        with open(path_to_file_with_settings, encoding='utf-8') as settings:
-            currency = json.load(settings)["user_currencies"]
+    currency = settings["user_currencies"]
 
-    except FileNotFoundError:
-        logger.error("Ошибка чтения файла")
-        return "Ошибка чтения файла."
     load_dotenv()
 
     logger.info("Начало формирования списка курса валют")
@@ -127,14 +135,11 @@ def get_currency_rates() -> list[dict] | str:
     return list_currency_rates
 
 
-def get_stock_prices() -> list[dict] | str:
+def get_stock_prices(settings: dict) -> list[dict] | str:
     """Получает цены акций, указанных в файле user_settings.json"""
     list_stock_prices = []
-    path_to_file_with_settings = os.path.join(os.path.dirname(__file__), '..', 'user_settings.json')
 
-    logger.info("Чтение файла настроек, с необходимыми акциями")
-    with open(path_to_file_with_settings, encoding='utf-8') as settings:
-        stocks = json.load(settings)["user_stocks"]
+    stocks = settings["user_stocks"]
 
     load_dotenv()
     date_today = datetime.today().strftime('%Y-%m-%d')
