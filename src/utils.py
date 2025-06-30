@@ -34,11 +34,19 @@ def read_xlsx_file(path_file: str) -> pd.DataFrame | str:
 def get_top_transactions(list_transactions: pd.DataFrame) -> list[dict]:
     """Получение топ-5 операций по их сумме"""
     top_transactions = []
+    length = 5
 
-    df = list_transactions.sort_values(by='Сумма операции').head()
+    if list_transactions.empty:
+        return []
+
+    df = list_transactions[list_transactions["Статус"] == "OK"]
+    df = df.sort_values(by='Сумма операции', key=abs, ascending=False).head()
+
+    if len(df) < 5:
+        length = len(df)
 
     logger.info("Начало формирования списка из 5-и самых частых категорий транзакций")
-    for _ in range(5):
+    for _ in range(length):
         date_format = df.loc[:, 'Дата операции'].iloc[_].split()[0]
 
         if type(df.loc[:, 'Категория'].iloc[_]) is float:
@@ -63,6 +71,9 @@ def get_card_expenses(list_transactions: pd.DataFrame) -> list[dict]:
 
     card_info = []
 
+    if list_transactions.empty:
+        return []
+
     df = list_transactions.groupby('Номер карты').agg({'Сумма операции': 'sum'})
     line_card_expenses = df.iterrows()
 
@@ -85,10 +96,14 @@ def get_currency_rates() -> list[dict] | str:
     list_currency_rates = []
     path_to_file_with_settings = os.path.join(os.path.dirname(__file__), '..', 'user_settings.json')
 
-    logger.info("Чтение файла настроек, с необходимыми валютами")
-    with open(path_to_file_with_settings, encoding='utf-8') as settings:
-        currency = json.load(settings)["user_currencies"]
+    try:
+        logger.info("Чтение файла настроек, с необходимыми валютами")
+        with open(path_to_file_with_settings, encoding='utf-8') as settings:
+            currency = json.load(settings)["user_currencies"]
 
+    except FileNotFoundError:
+        logger.error("Ошибка чтения файла")
+        return "Ошибка чтения файла."
     load_dotenv()
 
     logger.info("Начало формирования списка курса валют")
