@@ -2,9 +2,11 @@ import json
 import os
 from datetime import datetime
 
-from src.utils import get_card_expenses, read_xlsx_file, get_top_transactions, get_currency_rates, get_stock_prices
+from src.utils import get_card_expenses, read_xlsx_file, get_top_transactions, get_currency_rates, get_stock_prices, \
+    read_json_file
 
-path_to_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'operations.xlsx')
+path_to_xlsx_file = os.path.join(os.path.dirname(__file__), '..', 'data', 'operations.xlsx')
+path_to_json_file = os.path.join(os.path.dirname(__file__), '..', 'user_settings.json')
 
 
 def main_page(date: str) -> str:
@@ -22,15 +24,10 @@ def main_page(date: str) -> str:
 
     result_list = {
             "greeting": greeting,
-            "cards": get_card_expenses(read_xlsx_file(path_to_file)),
-            "top_transactions": get_top_transactions(read_xlsx_file(path_to_file)),
-            "currency_rates": get_currency_rates(),
-            "stock_prices": get_stock_prices()
+            "cards": get_card_expenses(read_xlsx_file(path_to_xlsx_file)),
+            "top_transactions": get_top_transactions(read_xlsx_file(path_to_xlsx_file)),
+            "currency_rates": get_currency_rates(read_json_file(path_to_json_file)),
+            "stock_prices": get_stock_prices(read_json_file(path_to_json_file))
         }
 
     return json.dumps(result_list, indent=4, ensure_ascii=False)
-
-
-if __name__ == "__main__":
-    ...
-    # print(main_page('2025-06-27 10:24:00'))
