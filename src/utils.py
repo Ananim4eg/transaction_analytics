@@ -2,6 +2,7 @@ import json
 import logging
 import os
 from datetime import datetime
+from typing import Any
 
 import pandas as pd
 import requests
@@ -31,7 +32,7 @@ def read_xlsx_file(path_file: str) -> pd.DataFrame | str:
         return "Файл не найден"
 
 
-def read_json_file(path_file: str) -> dict | str:
+def read_json_file(path_file: str) -> Any | str:
     """Считывает json-файл и возвращает словарь"""
 
     try:
@@ -44,6 +45,21 @@ def read_json_file(path_file: str) -> dict | str:
         return "Ошибка чтения файла."
 
     return result
+
+
+def sort_by_date(my_date: str, list_transactions: pd.DataFrame) -> pd.DataFrame:
+    """Сортирует DataFrame по заданному периоду"""
+
+    stop_span = datetime.strptime(my_date, "%Y-%m-%d %H:%M:%S")
+
+    start_span = datetime(day=1, month=stop_span.month, year=stop_span.year)
+
+    df = list_transactions[
+        (pd.to_datetime(list_transactions["Дата операции"], dayfirst=True) >= start_span) &
+        (pd.to_datetime(list_transactions["Дата операции"], dayfirst=True) <= stop_span)
+    ]
+
+    return df
 
 
 def get_top_transactions(list_transactions: pd.DataFrame) -> list[dict]:
