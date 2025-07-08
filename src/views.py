@@ -24,10 +24,22 @@ def main_page(date: str) -> str:
 
     result_list = {
             "greeting": greeting,
-            "cards": get_card_expenses(sort_by_date(date ,read_xlsx_file(path_to_xlsx_file))),
-            "top_transactions": get_top_transactions(sort_by_date(date ,read_xlsx_file(path_to_xlsx_file))),
-            "currency_rates": get_currency_rates(read_json_file(path_to_json_file)),
-            "stock_prices": get_stock_prices(read_json_file(path_to_json_file))
+            "cards": get_card_expenses(
+                sort_by_date(
+                    date ,read_xlsx_file(path_to_xlsx_file)
+                )
+            ),
+            "top_transactions": get_top_transactions(
+                sort_by_date(
+                    date ,read_xlsx_file(path_to_xlsx_file)
+                )
+            ),
+            "currency_rates": get_currency_rates(
+                read_json_file(path_to_json_file)
+            ),
+            "stock_prices": get_stock_prices(
+                read_json_file(path_to_json_file)
+            )
         }
 
     return json.dumps(result_list, indent=4, ensure_ascii=False)
