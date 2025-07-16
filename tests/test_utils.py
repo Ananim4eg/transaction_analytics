@@ -44,9 +44,9 @@ def test_get_top_transactions_success(my_dict_transactions):
     test_data = pd.DataFrame(my_dict_transactions)
 
     assert get_top_transactions(test_data) == [
-        {'amount': 4.3, 'category': 'товар', 'date': '8', 'description': 'хайт'},
-        {'amount': 2.3, 'category': 'Без категории', 'date': '6', 'description': 'мидл'},
-        {'amount': 1.2, 'category': 'товар', 'date': '5', 'description': 'топ'}
+        {'amount': 4.3, 'category': 'товар', 'date': '04.11.2019', 'description': 'хайт'},
+        {'amount': 2.3, 'category': 'Без категории', 'date': '02.05.2018', 'description': 'мидл'},
+        {'amount': 1.2, 'category': 'товар', 'date': '31.12.2021', 'description': 'топ'}
     ]
 
 

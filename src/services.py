@@ -33,7 +33,7 @@ def investment_bank(month: str, transactions: List[Dict[str, Any]], limit: int) 
 
     logger.info("Начало подсчета суммы накоплений")
     for item in transactions:
-        date_transactions = datetime.strptime(item["Дата операции"], '%Y-%m-%d')
+        date_transactions = datetime.strptime(item["Дата операции"], '%Y-%m')
         if date_transactions.month == target_month and date_transactions.year == target_year:
             result_amount += limit - (abs(item["Сумма операции"]) % limit)
     logger.info("Конец подсчета суммы накоплений")
