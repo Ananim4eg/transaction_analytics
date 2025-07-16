@@ -52,7 +52,6 @@ def write_result_to_file_with_parameter(file_name: str = "result.json") -> Any:
     return decorator
 
 
-@write_result_to_file
 def spending_by_category(transactions: pd.DataFrame, category: str, date: Optional[str] = None) -> pd.DataFrame | str:
     """Возвращает траты по заданной категории за последние 3 месяца"""
 
