@@ -83,4 +83,4 @@ def test_investment_bank_success(month, dict_transactions_for_investment, limit,
 def test_preparing_list_transactions(my_dict_transactions):
     assert preparing_list_transactions(
         pd.DataFrame(my_dict_transactions)
-    ) == [{'Дата операции': '2018-05-02', 'Сумма операции': -2.3}]
+    ) == [{'Дата операции': '2018-05', 'Сумма операции': -2.3}]

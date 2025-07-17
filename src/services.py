@@ -53,7 +53,7 @@ def preparing_list_transactions(my_list_transactions: pd.DataFrame) -> List[Dict
     logger.info("Начало формирования списка из дат и сумм транзакций")
     for index in range(len(df)):
         date = datetime.strptime(df.loc[:, 'Дата операции'][index], "%d.%m.%Y %H:%M:%S")
-        date_formated = datetime.strftime(date, '%Y-%m-%d')
+        date_formated = datetime.strftime(date, '%Y-%m')
 
         result.append(
             {
